@@ -6,3 +6,5 @@
 .DS_Store
 /build
 /captures
+/app/src/androidTest/java/com/mark/qos/mobileqos/
+/app/src/test/java/com/mark/qos/mobileqos/
