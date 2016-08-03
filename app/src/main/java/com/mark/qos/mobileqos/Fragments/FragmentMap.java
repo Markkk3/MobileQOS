@@ -24,6 +24,7 @@ public class FragmentMap extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public FragmentMap() {
+
         // Required empty public constructor
     }
 
