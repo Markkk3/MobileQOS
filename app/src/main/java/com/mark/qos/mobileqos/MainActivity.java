@@ -16,11 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mark.qos.mobileqos.Fragments.FragmentMap;
+import com.mark.qos.mobileqos.Fragments.FragmentPhoneInfo;
+import com.mark.qos.mobileqos.Fragments.FragmentResults;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FragmentMap fragmentmap;
+    FragmentPhoneInfo fragmentPhoneInfo;
+    FragmentResults fragmentResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentmap = new FragmentMap();
+        fragmentPhoneInfo = new FragmentPhoneInfo();
+        fragmentResults =  new FragmentResults();
     }
 
     @Override
@@ -90,17 +96,18 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction  ftrans = getFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.phone_info) {
+            ftrans.replace(R.id.content_main, fragmentPhoneInfo);
+
+        } else if (id == R.id.results) {
+            ftrans.replace(R.id.content_main, fragmentResults);
+
+        } else if (id == R.id.map) {
             ftrans.replace(R.id.content_main, fragmentmap);
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.setting) {
             Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_manage) {
+           startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
