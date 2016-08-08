@@ -3,17 +3,18 @@ package com.mark.qos.mobileqos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.mark.qos.mobileqos.Fragments.FragmentMap;
 import com.mark.qos.mobileqos.Fragments.FragmentPhoneInfo;
@@ -25,6 +26,9 @@ public class MainActivity extends AppCompatActivity
     FragmentMap fragmentmap;
     FragmentPhoneInfo fragmentPhoneInfo;
     FragmentResults fragmentResults;
+    final String LOG_TAG = "myLogs";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,9 @@ public class MainActivity extends AppCompatActivity
         fragmentmap = new FragmentMap();
         fragmentPhoneInfo = new FragmentPhoneInfo();
         fragmentResults =  new FragmentResults();
+
+
+
     }
 
     @Override
@@ -94,25 +101,31 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentTransaction  ftrans = getFragmentManager().beginTransaction();
+     //   FragmentTransaction  ftrans = getFragmentManager().beginTransaction();
+      FragmentTransaction ftrans =  getSupportFragmentManager().beginTransaction();
 
         if (id == R.id.phone_info) {
+            Log.d(LOG_TAG, "phone_info");
             ftrans.replace(R.id.content_main, fragmentPhoneInfo);
 
         } else if (id == R.id.results) {
+            Log.d(LOG_TAG, "results");
             ftrans.replace(R.id.content_main, fragmentResults);
 
         } else if (id == R.id.map) {
+            Log.d(LOG_TAG, "map");
             ftrans.replace(R.id.content_main, fragmentmap);
 
         } else if (id == R.id.setting) {
-            Intent intent = new Intent(this, MapsActivity.class);
+            Log.d(LOG_TAG, "setting");
+            Intent intent = new Intent(this, SettingsActivity.class);
            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
+            Log.d(LOG_TAG, "nav_share");
 
         } else if (id == R.id.nav_send) {
-
+            Log.d(LOG_TAG, "nav_send");
         }
         ftrans.commit();
 

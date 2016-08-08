@@ -5,9 +5,22 @@
     tools:context="com.mark.qos.mobileqos.Fragments.FragmentPhoneInfo">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Инфа о телефоне" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="Button"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:id="@+id/btngetinfo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textinfo"
+            android:text="Инфа о телефоне" />
+    </LinearLayout>
 
 </FrameLayout>
