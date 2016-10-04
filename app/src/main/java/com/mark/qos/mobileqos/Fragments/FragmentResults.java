@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.mark.qos.mobileqos.R;
 
+
 public class FragmentResults extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

@@ -19,6 +19,7 @@ import android.view.View;
 import com.mark.qos.mobileqos.Fragments.FragmentMap;
 import com.mark.qos.mobileqos.Fragments.FragmentPhoneInfo;
 import com.mark.qos.mobileqos.Fragments.FragmentResults;
+import com.mark.qos.mobileqos.Fragments.FragmentTest;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity
     FragmentMap fragmentmap;
     FragmentPhoneInfo fragmentPhoneInfo;
     FragmentResults fragmentResults;
+    FragmentTest fragmentTest;
     final String LOG_TAG = "myLogs";
 
 
@@ -41,8 +43,11 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+             //   Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+             //           .setAction("Action", null).show();
+                FragmentTransaction ftrans =  getSupportFragmentManager().beginTransaction();
+                ftrans.replace(R.id.content_main, fragmentTest);
+                ftrans.commit();
             }
         });
 
@@ -55,9 +60,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
         fragmentmap = new FragmentMap();
         fragmentPhoneInfo = new FragmentPhoneInfo();
         fragmentResults =  new FragmentResults();
+        fragmentTest =  new FragmentTest();
 
 
 

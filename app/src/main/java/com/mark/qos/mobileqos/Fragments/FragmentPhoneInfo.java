@@ -19,7 +19,6 @@ import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
-import android.telephony.CellSignalStrength;
 import android.telephony.CellSignalStrengthCdma;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
@@ -43,7 +42,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.mark.qos.mobileqos.R;
 
 
@@ -395,7 +393,7 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
     private String convertDataActivityToString(int dataActivity) {
         switch (dataActivity) {
             case TelephonyManager.DATA_ACTIVITY_DORMANT:
-                return "DORMANT";
+                return "DORMANT"; //спящий
             case TelephonyManager.DATA_ACTIVITY_IN:
                 return "IN";
             case TelephonyManager.DATA_ACTIVITY_INOUT:
