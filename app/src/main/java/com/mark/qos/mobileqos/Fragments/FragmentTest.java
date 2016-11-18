@@ -1,22 +1,30 @@
 package com.mark.qos.mobileqos.Fragments;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.echo.holographlibrary.Line;
+import com.echo.holographlibrary.LineGraph;
+import com.echo.holographlibrary.LinePoint;
 import com.mark.qos.mobileqos.R;
+import com.mark.qos.mobileqos.test.PingAsyncTask;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
 
 public class FragmentTest extends Fragment implements View.OnClickListener {
@@ -28,14 +36,20 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    final String LOG_TAG = "myLogss";
     private OnFragmentInteractionListener mListener;
  //   private NumberProgressBar bnp;
     Handler h;
+    ArrayList<Integer> arrayListPing = new ArrayList();
 
     Button btnStartTest;
-    private GraphView graph;
-    private LineGraphSeries<DataPoint> series;
+    private Line line;
+    private LinePoint linePoint;
+    LineGraph li;
+    TextView tvpingresult;
+    ProgressBar progressBarPing;
+    ProgressBar progressBarDownload;
+
 
     public FragmentTest() {
 
@@ -65,28 +79,60 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_fragment_test, container, false);
+        View v = inflater.inflate(R.layout.fragment_test, container, false);
 
         btnStartTest = (Button) v.findViewById(R.id.btnstarttest);
         btnStartTest.setOnClickListener(this);
+        tvpingresult = (TextView) v.findViewById(R.id.tvpingresult);
+        progressBarPing = (ProgressBar) v.findViewById(R.id.progressBarPing);
+        progressBarPing.setVisibility(View.GONE);
+        progressBarDownload = (ProgressBar) v.findViewById(R.id.progressBarDownload);
 
-        graph = (GraphView) v.findViewById(R.id.graph);
+
+
+    //    graph = (GraphView) v.findViewById(R.id.graph);
+
+               
        // graph.setPivotY(100);
        // graph.setPivotX(25);
-        graph.setMinimumHeight(100);
+      //  graph.setMinimumHeight(100);
+
+    //    LineGraph li = (LineGraph)v.findViewById(R.id.graph);
+        line = new Line();
+        linePoint = new LinePoint();
+        linePoint.setX(0);
+        linePoint.setY(5);
+        line.addPoint(linePoint);
+        linePoint = new LinePoint();
+        linePoint.setX(1);
+        linePoint.setY(15);
+        line.addPoint(linePoint);
+        linePoint = new LinePoint();
+        linePoint.setX(2);
+        linePoint.setY(10);
+        line.addPoint(linePoint);
+
+
+        line.setColor(Color.parseColor("#FFBB33"));
+        li = (LineGraph)v.findViewById(R.id.graph);
+/*
+        li = (LineGraph)v.findViewById(R.id.graph);
+        li.addLine(line);
+        li.setRangeY(0, 100);
+        li.setRangeX(0, 20);
+        li.setLineToFill(0);
+        */
         /*
-        series = new LineGraphSeries<DataPoint>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
+        Bar d2 = new Bar();
+        d2.setColor(Color.parseColor("#FFBB33"));
+        d2.setName("Test2");
+        d2.setValue(20);
 
-        graph.addSeries(series);
+        points.add(d2);
+
+
+
 */
-
-
       //  bnp = (NumberProgressBar)v.findViewById(R.id.number_progress_bar);
       //  bnp.setOnProgressBarListener(this);
 
@@ -96,25 +142,106 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    public void drawGraph(ArrayList<Integer> arrayList) {
+        progressBarPing.setVisibility(View.GONE);
+
+        line = new Line();
+        li.removeAllLines();
+        int max = arrayList.get(2);
+        int count = 0;
+        int sum = 0;
+        /*
+        linePoint = new LinePoint();
+        linePoint.setX(0);
+        linePoint.setY(5);
+        line.addPoint(linePoint);
+
+      */
+        for (int  j = 0; j<5; j++) {
+            int max1 = arrayList.get(0);
+            int num = 0;
+            for (int i = 0; i < arrayList.size(); i++) {
+                if(max1 < arrayList.get(i)) {
+                    num = i;
+                    max1 = arrayList.get(i);
+                }
+
+            }
+            Log.d(LOG_TAG, "удаляем: " + num + " "+ arrayList.get(num));
+            arrayList.remove(num);
+        }
+
+        Log.d(LOG_TAG, "размер: " + arrayList.size());
+
+        for (int  i=0; i<arrayList.size(); i++){
+            if (arrayList.get(i)> max) {
+                max = arrayList.get(i);
+            }
+            count++;
+            sum += arrayList.get(i);
+            linePoint = new LinePoint();
+            linePoint.setX(i);
+            linePoint.setY(arrayList.get(i));
+            line.addPoint(linePoint);
+        }
+
+        tvpingresult.setText(sum/count + " мс");
+
+
+
+        line.setColor(Color.parseColor("#FFBB33"));
+
+      //  LineGraph li = (LineGraph)v.findViewById(R.id.graph);
+        li.addLine(line);
+        li.setRangeY(0, (max+ max/10));
+        li.setRangeX(0, 14);
+
+        li.setLineToFill(0);
+
+    }
+
 
     private void starttest() {
-        series = new LineGraphSeries<DataPoint>();
+        tvpingresult.setText("");
+        progressBarPing.setVisibility(View.VISIBLE);
+
+
+        InetAddress serv_addr1 = null;
+        try {
+            serv_addr1 = InetAddress.getByName("93.85.84.234");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        Random r = new Random();
+        //  portServer = 5002 + r.nextInt(4);
+
+        final int portServer = 52001;
+        Log.d("UDP", "Отправляем на порт " + portServer);
+        final String mess = "testping";
+        final InetAddress serv_addr = serv_addr1;
+
+
+       // drawGraph(arrayListPing);
+
+        Log.d("UDP", "Получили " + arrayListPing.size());
+
 
         h = new Handler();
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    for (int cnt = 1; cnt < 20; cnt++) {
-                        TimeUnit.MILLISECONDS.sleep(1000);
-                        // обновляем ProgressBar
-                        Random random =  new Random();
 
-                        series.appendData(new DataPoint(cnt, random.nextInt(100)), false, 100);
-
+                    try {
+                        arrayListPing = new PingAsyncTask(serv_addr, portServer, mess, true).execute().get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
 
                         h.post(updateProgress);
-                    }
-                } catch (InterruptedException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -138,8 +265,11 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
 
     Runnable updateProgress = new Runnable() {
         public void run() {
+
+            drawGraph(arrayListPing);
        //     bnp.incrementProgressBy(5);
-            graph.addSeries(series);
+          //  barGraph.setBars(points);
+           // graph.addSeries(series);
         }
     };
 
@@ -161,12 +291,15 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnstarttest:
+                Log.d(LOG_TAG, "Запускаем тест");
                 starttest();
                     break;
         }
     }
 
-
+    public void setPingResult(int ping) {
+        Log.d(LOG_TAG, "Получили пинг = " + ping);
+    }
 
 
     public interface OnFragmentInteractionListener {

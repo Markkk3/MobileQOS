@@ -175,13 +175,16 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
                         final CellSignalStrengthCdma cdma = ((CellInfoCdma) info).getCellSignalStrength();
                         // do what you need
                     } else if (info instanceof CellInfoWcdma) {
+                        Log.d(LOG_TAG, "wcdma");
+
                         final CellSignalStrengthWcdma wcdma = ((CellInfoWcdma) info).getCellSignalStrength();
                         // do what you need
-                        Log.d(LOG_TAG, "wcdma");
+
                         textinfosignal.setText(" ");
                         textinfosignal.append("\n Сигнал: \t" + wcdma.getDbm());
                         textinfosignal.append("\n AsuLevel \t" + wcdma.getAsuLevel());
                         textinfosignal.append("\n Уровень: \t" + wcdma.getLevel());
+
                     } else if (info instanceof CellInfoLte) {
                         final CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
                         // do what you need
@@ -317,8 +320,6 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLoc));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
         }
-
-
     }
 
     @Override
