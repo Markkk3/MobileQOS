@@ -1,4 +1,4 @@
-package com.mark.qos.mobileqos.Fragments;
+package com.mark.qos.mobileqos.fragments;
 
 import android.Manifest;
 import android.annotation.TargetApi;

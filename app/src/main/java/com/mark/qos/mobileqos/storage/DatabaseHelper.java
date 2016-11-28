@@ -1,4 +1,4 @@
-package com.mark.qos.mobileqos;
+package com.mark.qos.mobileqos.storage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,10 +33,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // версия базы данных
     private static final int DATABASE_VERSION = 1;
     // имя таблицы
-    public static final String DATABASE_TABLE = "measurement";
+    public static final String DATABASE_TABLE_RESULTS = "results";
 
-    private static final String DATABASE_CREATE_SCRIPT = "create table "
-            + DATABASE_TABLE + " (" + ID
+    private static final String DATABASE_CREATE_SCRIPT_RESULTS = "create table "
+            + DATABASE_TABLE_RESULTS + " (" + ID
             + " integer primary key autoincrement, " + ID_SUBSCRIBER  + " real, "
             + TYPE_CONNECTION + " text," + CID + " integer, "
             + PSD + " integer," + LAC + " integer, "
@@ -46,6 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + LONGITUDE  + " real, " + PING + " integer,"
             + PACKET_LOSS  + " integer, " + DOWNLOAD + " integer,"
             + UPLOAD + " integer, " + DATETIME + " DATETIME);";
+    private static DatabaseHelper databaseHelper;
 
     // flag INTEGER DEFAULT 0,
     //+ BaseColumns._ID
@@ -64,12 +65,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
+        sqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT_RESULTS);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public static DatabaseHelper getInstance(Context context) {
+        if(databaseHelper == null) {
+            databaseHelper = new DatabaseHelper(context);
+        }
+        return databaseHelper;
     }
 }

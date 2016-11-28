@@ -1,6 +1,8 @@
 package com.mark.qos.mobileqos;
 
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,10 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.mark.qos.mobileqos.Fragments.FragmentMap;
-import com.mark.qos.mobileqos.Fragments.FragmentPhoneInfo;
-import com.mark.qos.mobileqos.Fragments.FragmentResults;
-import com.mark.qos.mobileqos.Fragments.FragmentTest;
+import com.mark.qos.mobileqos.fragments.FragmentMap;
+import com.mark.qos.mobileqos.fragments.FragmentPhoneInfo;
+import com.mark.qos.mobileqos.fragments.FragmentResults;
+import com.mark.qos.mobileqos.fragments.FragmentTest;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,7 +30,13 @@ public class MainActivity extends AppCompatActivity
     FragmentResults fragmentResults;
     FragmentTest fragmentTest;
     final String LOG_TAG = "myLogs";
-
+    Intent intent;
+    LocationService locationService;
+    private  boolean bound = false;
+    private PendingIntent pi;
+    final int LOCATION = 1;
+    public final static String PARAM_PINTENT = "pendingIntent";
+    public final static String PARAM_RESULT = "result";
 
 
     @Override
@@ -65,9 +73,41 @@ public class MainActivity extends AppCompatActivity
         fragmentResults =  new FragmentResults();
         fragmentTest =  new FragmentTest();
 
+        //startService(new Intent(this, LocationService.class));
+       // intent = new Intent(this, LocationService.class);
+        Intent data = new Intent();
+        pi = createPendingResult(LOCATION, data, 0);
+        intent = new Intent(this, LocationService.class).putExtra(PARAM_PINTENT, pi);
+        startService(intent);
 
 
     }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(LOG_TAG, "requestCode = " + requestCode + ", resultCode = "
+                + resultCode);
+
+        Location location = getIntent().getExtras().getParcelable(MainActivity.PARAM_RESULT);
+
+        Log.d(LOG_TAG, "latitude = " + location.getLatitude());
+
+       /* // Ловим сообщения о старте задач
+        if (resultCode == STATUS_START) {
+            switch (requestCode) {
+                case TASK1_CODE:
+                    tvTask1.setText("Task1 start");
+                    break;
+                case TASK2_CODE:
+                    tvTask2.setText("Task2 start");
+                    break;
+                case TASK3_CODE:
+                    tvTask3.setText("Task3 start");
+                    break;
+            }*/
+    //   }
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -139,4 +179,38 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopService(intent);
+
+    }
+
+    public void onStart() {
+        super.onStart();
+        Log.d(LOG_TAG, "onStart");
+      //  bindService(intent, connection, BIND_AUTO_CREATE); //Context.BIND_AUTO_CREATE
+
+    }
+  /*
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder binder) {
+            Log.d(LOG_TAG, "MainActivity onServiceConnected" );
+
+            //  MyService.MyServiceBinder myServiceBinder =
+            //          (MyService.MyServiceBinder) binder;
+            //  myService = myServiceBinder.getMyService();
+            locationService = ((LocationService.LocationServiceBinder) binder).getLocationService();
+
+            bound=true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.d(LOG_TAG, "onServiceDisconnected");
+            bound=false;
+        }
+    };*/
 }

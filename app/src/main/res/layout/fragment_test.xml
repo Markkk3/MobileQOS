@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context="com.mark.qos.mobileqos.Fragments.FragmentTest">
+    tools:context="com.mark.qos.mobileqos.fragments.FragmentTest">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -81,22 +81,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView4"
-                    android:layout_weight="5" />
-
+                    android:layout_weight="4" />
 
 
                 <TextView
-                    android:text="12.34 Mb/s"
+                    android:text="-"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView6"
+                    android:id="@+id/tvdownloadspeed"
                     android:layout_weight="1" />
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:id="@+id/progressBarDownload"
                     android:layout_weight="1" />
             </LinearLayout>
@@ -142,6 +140,37 @@
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_height="match_parent">
 
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/btnstarttest">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+
+                    <com.jjoe64.graphview.GraphView
+                        android:id="@+id/graphping"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dip" />
+
+                    <com.jjoe64.graphview.GraphView
+                        android:id="@+id/graph1"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dip" />
+
+                    <!--<com.echo.holographlibrary.LineGraph
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:id="@+id/graph"/>-->
+
+
+
+                </LinearLayout>
+            </ScrollView>
+
             <Button
                 android:text="Запуск теста"
                 android:layout_width="wrap_content"
@@ -149,14 +178,9 @@
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnstarttest"
-                android:layout_marginBottom="11dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true" />
 
-            <com.echo.holographlibrary.LineGraph
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/graph"/>
         </RelativeLayout>
 
 

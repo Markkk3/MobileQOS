@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.mark.qos.mobileqos.Fragments.FragmentTest;
+import com.mark.qos.mobileqos.fragments.FragmentTest;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
