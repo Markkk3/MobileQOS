@@ -7,7 +7,7 @@ package com.mark.qos.mobileqos.data;
 public class ResultItem {
 
     int id;
-    long id_subscriber;
+    String id_subscriber;
     String typeConnection;
     long datetime;
     int cid;
@@ -29,15 +29,19 @@ public class ResultItem {
         this.id = id;
     }
 
+    public ResultItem() {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
 
-    public long getId_subscriber() {
+    public String getId_subscriber() {
         return id_subscriber;
     }
 
-    public void setId_subscriber(long id_subscriber) {
+    public void setId_subscriber(String id_subscriber) {
         this.id_subscriber = id_subscriber;
     }
 

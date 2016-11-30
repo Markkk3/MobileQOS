@@ -75,7 +75,7 @@ public class DatabaseManager {
 
         while (cursor.moveToNext()) {
             ResultItem resultItem = new ResultItem(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
-            resultItem.setId_subscriber(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.ID_SUBSCRIBER)));
+            resultItem.setId_subscriber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.ID_SUBSCRIBER)));
             resultItem.setTypeConnection(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TYPE_CONNECTION)));
             resultItem.setCid(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CID)));
             resultItem.setPsd(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.PSD)));

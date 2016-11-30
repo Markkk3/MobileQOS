@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_CREATE_SCRIPT_RESULTS = "create table "
             + DATABASE_TABLE_RESULTS + " (" + ID
-            + " integer primary key autoincrement, " + ID_SUBSCRIBER  + " real, "
+            + " integer primary key autoincrement, " + ID_SUBSCRIBER  + " text, "
             + TYPE_CONNECTION + " text," + CID + " integer, "
             + PSD + " integer," + LAC + " integer, "
             + MCC + " integer," + MNC + " integer, "

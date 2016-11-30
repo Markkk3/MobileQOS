@@ -1,8 +1,10 @@
 package com.mark.qos.mobileqos.fragments;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +22,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.mark.qos.mobileqos.R;
+import com.mark.qos.mobileqos.data.ResultItem;
 import com.mark.qos.mobileqos.test.DownloadTest;
+import com.mark.qos.mobileqos.test.PhoneInfo;
 import com.mark.qos.mobileqos.test.PingAsyncTask;
 
 import java.net.InetAddress;
@@ -55,6 +59,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     DownloadTest downloadTest;
     TextView tvDownloadSpeed;
     private GraphView graphViewPing;
+    ResultItem resultItem;
 
 
     public FragmentTest() {
@@ -166,6 +171,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         int max = arrayList.get(2);
         int count = 0;
         int sum = 0;
+        int packetloss = 0;
         /*
         linePoint = new LinePoint();
         linePoint.setX(0);
@@ -180,6 +186,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
                 if(max1 < arrayList.get(i)) {
                     num = i;
                     max1 = arrayList.get(i);
+
                 }
 
             }
@@ -193,8 +200,14 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             if (arrayList.get(i)> max) {
                 max = arrayList.get(i);
             }
-            count++;
-            sum += arrayList.get(i);
+
+            if(arrayList.get(i)!= -1) {
+                count++;
+                sum += arrayList.get(i);
+            }
+            else {
+                packetloss++;
+            }
             dataPoint1[i] = new DataPoint(i,  arrayList.get(i));
             /*
             linePoint = new LinePoint();
@@ -203,6 +216,21 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             line.addPoint(linePoint);
             */
         }
+        if(packetloss>4) {
+            resultItem.setPacketlost(100);
+        }
+        else {
+            resultItem.setPacketlost(packetloss / arrayList.size());
+        }
+
+        if(count!=0) {
+            resultItem.setPing(sum/count);
+            tvpingresult.setText(sum/count + " мс");
+        }
+        else {
+            tvpingresult.setText("-");
+        }
+
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(dataPoint1);
 
@@ -214,19 +242,12 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         graphViewPing.getViewport().setMaxX(dataPoint1.length);
         graphViewPing.addSeries(series);
 
-
-
-        tvpingresult.setText(sum/count + " мс");
-
-
-
       /*//  line.setColor(Color.parseColor("#FFBB33"));
 
       //  LineGraph li = (LineGraph)v.findViewById(R.id.graph);
         li.addLine(line);
         li.setRangeY(0, (max+ max/10));
         li.setRangeX(0, 14);
-
         li.setLineToFill(0);*/
 
     }
@@ -235,7 +256,6 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     private void startTestPing() {
         tvpingresult.setText("");
         progressBarPing.setVisibility(View.VISIBLE);
-
 
         InetAddress serv_addr1 = null;
         try {
@@ -255,7 +275,6 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
        // drawGraph(arrayListPing);
 
         Log.d("UDP", "Получили " + arrayListPing.size());
-
 
         h = new Handler();
         Thread t = new Thread(new Runnable() {
@@ -338,6 +357,42 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
            // drawGraph(arrayListPing);
             progressBarDownload.setVisibility(View.GONE);
             progressBarPing.setVisibility(View.GONE);
+            startTestPhoneInfo();
+            //     bnp.incrementProgressBy(5);
+            //  barGraph.setBars(points);
+            // graph.addSeries(series);
+        }
+    };
+
+    private void startTestPhoneInfo() {
+
+
+        h = new Handler();
+        Thread t = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            public void run() {
+                try {
+
+                    PhoneInfo phoneInfo = new PhoneInfo(getContext(), resultItem);
+                    phoneInfo.getInfo();
+
+                    h.post(updatePhoneInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+
+    }
+
+    Runnable updatePhoneInfo = new Runnable() {
+        public void run() {
+            Log.d(LOG_TAG, "Сделали");
+            // drawGraph(arrayListPing);
+           // progressBarDownload.setVisibility(View.GONE);
+          //  progressBarPing.setVisibility(View.GONE);
             //     bnp.incrementProgressBy(5);
             //  barGraph.setBars(points);
             // graph.addSeries(series);
@@ -364,6 +419,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             case R.id.btnstarttest:
                 Log.d(LOG_TAG, "Запускаем тест");
                // downloadTest.start();
+                resultItem = new ResultItem();
                 startTestPing();
                     break;
         }
