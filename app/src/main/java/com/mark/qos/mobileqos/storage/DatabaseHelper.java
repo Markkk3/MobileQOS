@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TYPE_CONNECTION = "type_connection";
     public static final String DATETIME = "datetime";
     public static final String CID = "cid";
-    public static final String PSD = "psd";
+    public static final String PSC = "psd";
     public static final String LAC = "lac";
     public static final String MCC = "mcc";
     public static final String MNC = "mnc";
@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DATABASE_TABLE_RESULTS + " (" + ID
             + " integer primary key autoincrement, " + ID_SUBSCRIBER  + " text, "
             + TYPE_CONNECTION + " text," + CID + " integer, "
-            + PSD + " integer," + LAC + " integer, "
+            + PSC + " integer," + LAC + " integer, "
             + MCC + " integer," + MNC + " integer, "
             + SIGNAL_LEVEL + " integer," + ASU_LEVEL + " integer, "
             + SPEED   + " integer, " + LATITUDE + " real,"

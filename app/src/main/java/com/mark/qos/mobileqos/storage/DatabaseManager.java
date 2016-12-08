@@ -1,9 +1,10 @@
 package com.mark.qos.mobileqos.storage;
 
-import android.app.Activity;
+import android.app.Application;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.mark.qos.mobileqos.MyApplication;
 import com.mark.qos.mobileqos.data.ResultItem;
@@ -16,24 +17,25 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 
+    final String LOG_TAG = "myLogs";
     DatabaseHelper databaseHelper;
 
 
-    public DatabaseManager(Activity activity) {
+    public DatabaseManager(Application application) {
 
-        MyApplication myApplication = (MyApplication) activity
-                .getApplication();
+        MyApplication myApplication = (MyApplication) application;
         databaseHelper = myApplication.getDatabaseHelper();
     }
 
     public void writeNewResult(ResultItem resultitem) {
+        Log.d(LOG_TAG, "writeNewResult");
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         // Задайте значения для каждого столбца
         values.put(DatabaseHelper.ID_SUBSCRIBER, resultitem.getId_subscriber());
         values.put(DatabaseHelper.TYPE_CONNECTION, resultitem.getTypeConnection());
         values.put(DatabaseHelper.CID, resultitem.getCid());
-        values.put(DatabaseHelper.PSD, resultitem.getPsd());
+        values.put(DatabaseHelper.PSC, resultitem.getPsd());
         values.put(DatabaseHelper.LAC, resultitem.getLac());
         values.put(DatabaseHelper.MCC, resultitem.getMcc());
         values.put(DatabaseHelper.MNC, resultitem.getMnc());
@@ -56,29 +58,30 @@ public class DatabaseManager {
 
     }
 
-    private void readResults() {
+    public ArrayList<ResultItem> readResults() {
         ArrayList<ResultItem> resultItemArrayList = new ArrayList();
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        Cursor cursor = db.query(DatabaseHelper.DATABASE_TABLE_RESULTS, new String[] {DatabaseHelper.ID,
-                DatabaseHelper.ID_SUBSCRIBER, DatabaseHelper.TYPE_CONNECTION,
-                DatabaseHelper.CID, DatabaseHelper.PSD,
-                DatabaseHelper.LAC, DatabaseHelper.MCC,
-                DatabaseHelper.MNC, DatabaseHelper.SIGNAL_LEVEL,
-                DatabaseHelper.ASU_LEVEL, DatabaseHelper.SPEED,
-                DatabaseHelper.LATITUDE, DatabaseHelper.LONGITUDE,
-                DatabaseHelper.PING, DatabaseHelper.PACKET_LOSS,
-                DatabaseHelper.DOWNLOAD, DatabaseHelper.UPLOAD,
-                DatabaseHelper.DATETIME},
+
+        Cursor cursor = db.query(DatabaseHelper.DATABASE_TABLE_RESULTS, new String[]{DatabaseHelper.ID,
+                        DatabaseHelper.ID_SUBSCRIBER, DatabaseHelper.TYPE_CONNECTION,
+                        DatabaseHelper.CID, DatabaseHelper.PSC,
+                        DatabaseHelper.LAC, DatabaseHelper.MCC,
+                        DatabaseHelper.MNC, DatabaseHelper.SIGNAL_LEVEL,
+                        DatabaseHelper.ASU_LEVEL, DatabaseHelper.SPEED,
+                        DatabaseHelper.LATITUDE, DatabaseHelper.LONGITUDE,
+                        DatabaseHelper.PING, DatabaseHelper.PACKET_LOSS,
+                        DatabaseHelper.DOWNLOAD, DatabaseHelper.UPLOAD,
+                        DatabaseHelper.DATETIME},
                 null, null,
-                null, null, null) ;
+                null, null, null);
 
         while (cursor.moveToNext()) {
             ResultItem resultItem = new ResultItem(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
             resultItem.setId_subscriber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.ID_SUBSCRIBER)));
             resultItem.setTypeConnection(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TYPE_CONNECTION)));
             resultItem.setCid(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CID)));
-            resultItem.setPsd(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.PSD)));
+            resultItem.setPsd(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.PSC)));
             resultItem.setLac(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.LAC)));
             resultItem.setMcc(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MCC)));
             resultItem.setMnc(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MNC)));
@@ -97,7 +100,7 @@ public class DatabaseManager {
         cursor.close();
         db.close();
 
-
+        return resultItemArrayList;
     }
 
 
@@ -114,7 +117,6 @@ public class DatabaseManager {
             + PACKET_LOSS  + " integer, " + DOWNLOAD + " integer,"
             + UPLOAD + " integer, " + DATETIME + " DATETIME);";
     private static DatabaseHelper databaseHelper;*/
-
 
 
 }

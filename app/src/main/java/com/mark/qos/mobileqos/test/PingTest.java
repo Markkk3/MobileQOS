@@ -38,7 +38,6 @@ public class PingTest {
 
     public void startTestPing() {
 
-
         arrayPing.clear();
         try {
             serv_addr = InetAddress.getByName(server_ip);

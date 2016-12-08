@@ -21,6 +21,7 @@ import com.mark.qos.mobileqos.fragments.FragmentMap;
 import com.mark.qos.mobileqos.fragments.FragmentPhoneInfo;
 import com.mark.qos.mobileqos.fragments.FragmentResults;
 import com.mark.qos.mobileqos.fragments.FragmentTest;
+import com.mark.qos.mobileqos.storage.DatabaseManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +40,14 @@ public class MainActivity extends AppCompatActivity
     public final static String PARAM_RESULT = "result";
 
 
+    Location location;
+
+
+
+    DatabaseManager databaseManager;
+    private FloatingActionButton fab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +64,7 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ftrans =  getSupportFragmentManager().beginTransaction();
                 ftrans.replace(R.id.content_main, fragmentTest);
                 ftrans.commit();
+                fab.setVisibility(View.GONE);
             }
         });
 
@@ -73,6 +83,8 @@ public class MainActivity extends AppCompatActivity
         fragmentResults =  new FragmentResults();
         fragmentTest =  new FragmentTest();
 
+       databaseManager = new DatabaseManager(getApplication());
+
         //startService(new Intent(this, LocationService.class));
        // intent = new Intent(this, LocationService.class);
         Intent data = new Intent();
@@ -80,16 +92,22 @@ public class MainActivity extends AppCompatActivity
         intent = new Intent(this, LocationService.class).putExtra(PARAM_PINTENT, pi);
         startService(intent);
 
-
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(LOG_TAG, "requestCode = " + requestCode + ", resultCode = "
                 + resultCode);
 
-        Location location = getIntent().getExtras().getParcelable(MainActivity.PARAM_RESULT);
+        try {
+            location = data.getParcelableExtra(MainActivity.PARAM_RESULT);
+            Log.d(LOG_TAG, "latitude = " + location.getLatitude());
+            Log.d(LOG_TAG, "speed = " + location.getSpeed());
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "не получилось" );
+        }
 
-        Log.d(LOG_TAG, "latitude = " + location.getLatitude());
+      //  Log.d(LOG_TAG, "latitude = " + location.getLatitude());
 
        /* // Ловим сообщения о старте задач
         if (resultCode == STATUS_START) {
@@ -146,7 +164,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        fab.setVisibility(View.VISIBLE);
      //   FragmentTransaction  ftrans = getFragmentManager().beginTransaction();
       FragmentTransaction ftrans =  getSupportFragmentManager().beginTransaction();
 
@@ -183,6 +201,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy");
         stopService(intent);
 
     }
@@ -193,6 +212,21 @@ public class MainActivity extends AppCompatActivity
       //  bindService(intent, connection, BIND_AUTO_CREATE); //Context.BIND_AUTO_CREATE
 
     }
+
+    public void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop");
+       // stopService(intent);
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
   /*
     private ServiceConnection connection = new ServiceConnection() {
         @Override

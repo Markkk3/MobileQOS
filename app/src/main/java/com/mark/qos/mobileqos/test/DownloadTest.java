@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by tushkevich_m on 21.11.2016.
  */
 
-public class DownloadTest {
+public class DownloadTest  {
 
     private static final String TAG = DownloadTest.class.getSimpleName();
 
@@ -68,15 +68,31 @@ public class DownloadTest {
     ArrayList<Long> resultTimeB= new ArrayList();
     GraphView graphView;
     TextView tvDownloadSpeed;
+    Thread prepareTestThread;
+    DownloadTestInterface downloadTestInterface;
+    float finishSpeed =0;
+    //Thread mWorkerFirstThread = new Thread(mWorkerFirst);
 
 
-
+    public void registerCallBack(DownloadTestInterface callback){
+        this.downloadTestInterface = callback;
+    }
     public DownloadTest(GraphView graphView, TextView tvDownloadSpeed) {
 
         this.graphView = graphView;
         this.tvDownloadSpeed = tvDownloadSpeed;
+        prepareTestThread = new Thread(prepareTest);;
 
     }
+/*
+    @Override
+    protected void doInBackground(String... strings) {
+
+        start();
+        prepareTestThread.start();
+
+        return null;
+    }*/
 
     public void start() {
         speedFirst.clear();
@@ -89,6 +105,8 @@ public class DownloadTest {
         new Thread(prepareTest).start();
 
     }
+
+
 
     private final Handler mHandlerPrepare = new Handler() {
         @Override
@@ -334,17 +352,7 @@ public class DownloadTest {
 
                 case MSG_COMPLETE_STATUS:
                     final SpeedInfo info2 = (SpeedInfo) msg.obj;
-                    /*
-                    mTxtSpeed.setText(String.format(getResources().getString(R.string.update_downloaded_complete), mDecimalFormater.format(info2.megabits)));
 
-                    mTxtProgress.setText(String.format(getResources().getString(R.string.update_downloaded) + " " + EXPECTED_SIZE_1000));
-
-                    if (networkType(info2.kilobits) == 1) {
-                        mTxtNetwork.setText(R.string.network_3g);
-                    } else {
-                        mTxtNetwork.setText(R.string.network_edge);
-                    }
-                    */
                     switch (msg.arg2) {
                         case 1:
                             threadFirstRun = false;
@@ -437,6 +445,7 @@ public class DownloadTest {
 
         }
     };
+
 
 
     private class TimeThread extends Thread { // описываем объект Runnable в конструкторе
@@ -768,6 +777,8 @@ public class DownloadTest {
         */
         graphView.addSeries(series7);
 
+        downloadTestInterface.finishDownloadTest(finishSpeed);
+
     }
 
     private DataPoint[] Beze() {
@@ -800,9 +811,9 @@ public class DownloadTest {
                 }
             }
         }
-
-        tvDownloadSpeed.setText("" +  (sumspeed/k) + " kb/s");
-        Log.d(LOG_TAG, "Скорость = " +  (sumspeed/k) + " kb/s");
+        finishSpeed = (float) sumspeed/k;
+        tvDownloadSpeed.setText("" +  finishSpeed + " kb/s");
+        Log.d(LOG_TAG, "Скорость = " +  finishSpeed + " kb/s");
 
         for (int i = 0; i < resultSpeed.size(); i++) {
 

@@ -21,9 +21,11 @@ import com.echo.holographlibrary.LinePoint;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.mark.qos.mobileqos.MainActivity;
 import com.mark.qos.mobileqos.R;
 import com.mark.qos.mobileqos.data.ResultItem;
 import com.mark.qos.mobileqos.test.DownloadTest;
+import com.mark.qos.mobileqos.test.DownloadTestInterface;
 import com.mark.qos.mobileqos.test.PhoneInfo;
 import com.mark.qos.mobileqos.test.PingAsyncTask;
 
@@ -34,7 +36,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 
-public class FragmentTest extends Fragment implements View.OnClickListener {
+public class FragmentTest extends Fragment implements View.OnClickListener, DownloadTestInterface{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +62,9 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     TextView tvDownloadSpeed;
     private GraphView graphViewPing;
     ResultItem resultItem;
+    MainActivity mainActivity;
+    private GraphView graphView;
+    private ProgressBar progressBarUpload;
 
 
     public FragmentTest() {
@@ -90,6 +95,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mainActivity = (MainActivity) getActivity();
         View v = inflater.inflate(R.layout.fragment_test, container, false);
 
         btnStartTest = (Button) v.findViewById(R.id.btnstarttest);
@@ -99,12 +105,15 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         progressBarPing.setVisibility(View.GONE);
         progressBarDownload = (ProgressBar) v.findViewById(R.id.progressBarDownload);
         progressBarDownload.setVisibility(View.GONE);
+        progressBarUpload = (ProgressBar) v.findViewById(R.id.progressBarUpload);
+        progressBarUpload.setVisibility(View.GONE);
         tvDownloadSpeed = (TextView) v.findViewById(R.id.tvdownloadspeed);
 
-        GraphView graphView = (GraphView) v.findViewById(R.id.graph1);
+        graphView = (GraphView) v.findViewById(R.id.graph1);
         graphViewPing = (GraphView) v.findViewById(R.id.graphping);
 
         downloadTest = new DownloadTest(graphView, tvDownloadSpeed);
+        downloadTest.registerCallBack(this);
 
 
 
@@ -163,22 +172,13 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
 
     public void drawGraph(ArrayList<Integer> arrayList) {
         progressBarPing.setVisibility(View.GONE);
-/*
-        line = new Line();
-        li.removeAllLines();
-        */
+
         graphViewPing.removeAllSeries();
         int max = arrayList.get(2);
         int count = 0;
         int sum = 0;
         int packetloss = 0;
-        /*
-        linePoint = new LinePoint();
-        linePoint.setX(0);
-        linePoint.setY(5);
-        line.addPoint(linePoint);
 
-      */
         for (int  j = 0; j<5; j++) {
             int max1 = arrayList.get(0);
             int num = 0;
@@ -220,7 +220,11 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             resultItem.setPacketlost(100);
         }
         else {
-            resultItem.setPacketlost(packetloss / arrayList.size());
+            try {
+                resultItem.setPacketlost(packetloss / arrayList.size());
+            } catch (Exception e) {
+
+            }
         }
 
         if(count!=0) {
@@ -242,14 +246,6 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         graphViewPing.getViewport().setMaxX(dataPoint1.length);
         graphViewPing.addSeries(series);
 
-      /*//  line.setColor(Color.parseColor("#FFBB33"));
-
-      //  LineGraph li = (LineGraph)v.findViewById(R.id.graph);
-        li.addLine(line);
-        li.setRangeY(0, (max+ max/10));
-        li.setRangeX(0, 14);
-        li.setLineToFill(0);*/
-
     }
 
 
@@ -266,7 +262,8 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         Random r = new Random();
         //  portServer = 5002 + r.nextInt(4);
         Log.d("UDP", "Отправляем на порт random " + r.nextInt(3));
-        final int portServer = 52001 + r.nextInt(3);;
+        final int portServer = 52001 + r.nextInt(3);
+        Toast.makeText(this.getContext(), "Port:"  + portServer, Toast.LENGTH_SHORT);
         Log.d("UDP", "Отправляем на порт " + portServer);
         final String mess = "testping";
         final InetAddress serv_addr = serv_addr1;
@@ -319,7 +316,11 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         public void run() {
 
             drawGraph(arrayListPing);
-            startTestDownload();
+
+            progressBarDownload.setVisibility(View.VISIBLE);
+            downloadTest.start();
+          //  startTestPhoneInfo();
+
 
        //     bnp.incrementProgressBy(5);
           //  barGraph.setBars(points);
@@ -327,10 +328,10 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
         }
     };
 
-    private void startTestDownload() {
+   /* private void startTestDownload() {
         tvDownloadSpeed.setText("");
         progressBarDownload.setVisibility(View.VISIBLE);
-        progressBarPing.setVisibility(View.VISIBLE);
+       // progressBarPing.setVisibility(View.VISIBLE);
 
 
         h = new Handler();
@@ -340,7 +341,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
 
                     downloadTest.start();
 
-                    h.post(updateProgressDownload);
+                 //   h.post(updateProgressDownload);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -353,7 +354,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
 
     Runnable updateProgressDownload = new Runnable() {
         public void run() {
-
+            Log.d(LOG_TAG, "updateProgressDownload");
            // drawGraph(arrayListPing);
             progressBarDownload.setVisibility(View.GONE);
             progressBarPing.setVisibility(View.GONE);
@@ -362,10 +363,10 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             //  barGraph.setBars(points);
             // graph.addSeries(series);
         }
-    };
+    };*/
 
     private void startTestPhoneInfo() {
-
+        Log.d(LOG_TAG, "startTestPhoneInfo()");
 
         h = new Handler();
         Thread t = new Thread(new Runnable() {
@@ -373,7 +374,9 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
             public void run() {
                 try {
 
+
                     PhoneInfo phoneInfo = new PhoneInfo(getContext(), resultItem);
+                    phoneInfo.setLocation(mainActivity.getLocation());
                     phoneInfo.getInfo();
 
                     h.post(updatePhoneInfo);
@@ -390,6 +393,8 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
     Runnable updatePhoneInfo = new Runnable() {
         public void run() {
             Log.d(LOG_TAG, "Сделали");
+            btnStartTest.setEnabled(true);
+            mainActivity.getDatabaseManager().writeNewResult(resultItem);
             // drawGraph(arrayListPing);
            // progressBarDownload.setVisibility(View.GONE);
           //  progressBarPing.setVisibility(View.GONE);
@@ -420,6 +425,7 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
                 Log.d(LOG_TAG, "Запускаем тест");
                // downloadTest.start();
                 resultItem = new ResultItem();
+                btnStartTest.setEnabled(false);
                 startTestPing();
                     break;
         }
@@ -427,6 +433,22 @@ public class FragmentTest extends Fragment implements View.OnClickListener {
 
     public void setPingResult(int ping) {
         Log.d(LOG_TAG, "Получили пинг = " + ping);
+    }
+
+    @Override
+    public void startDownloadTest() {
+        Log.d(LOG_TAG, "startDownloadTest()");
+    }
+
+    @Override
+    public void finishDownloadTest(float finishSpeed) {
+        Log.d(LOG_TAG, "stopDownloadTest() " );
+        resultItem.setDownload((int) finishSpeed);
+        resultItem.setUpload(1);
+        progressBarDownload.setVisibility(View.GONE);
+        progressBarPing.setVisibility(View.GONE);
+        btnStartTest.setEnabled(true);
+        startTestPhoneInfo();
     }
 
 

@@ -61,7 +61,7 @@ public class LocationService extends Service implements LocationListener, Google
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        Log.d(LOG_TAG, "MyS onStartCommand");
         pi = intent.getParcelableExtra(MainActivity.PARAM_PINTENT);
 
         if (mGoogleApiClient == null) {
@@ -87,8 +87,8 @@ public class LocationService extends Service implements LocationListener, Google
     protected void createLocationRequest() {
         Log.d(LOG_TAG, " MyS createLocationRequest()");
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -107,17 +107,24 @@ public class LocationService extends Service implements LocationListener, Google
 
 
     public void onLocationChanged(Location location) {
-        Log.d(LOG_TAG, "onLocationChanged ");
+        Log.d(LOG_TAG, "onLocationChanged " + location.getLatitude());
 
         Intent intent = new Intent().putExtra(MainActivity.PARAM_RESULT, location);
         try {
-            pi.send(LocationService.this, 2, intent);
+            pi.send(LocationService.this, 1, intent);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopLocationUpdates();
+        stopSelf();
+        Log.d(LOG_TAG, "MyS onDestroy");
+    }
 
     protected void stopLocationUpdates() {
         Log.d(LOG_TAG, "MyS stopLocationUpdates()");

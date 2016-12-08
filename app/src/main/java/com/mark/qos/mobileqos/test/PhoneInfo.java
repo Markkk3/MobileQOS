@@ -2,6 +2,7 @@ package com.mark.qos.mobileqos.test;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.location.Location;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.telephony.CellInfo;
@@ -19,9 +20,6 @@ import android.util.Log;
 
 import com.mark.qos.mobileqos.data.ResultItem;
 
-/**
- * Created by tushkevich_m on 22.11.2016.
- */
 
 public class PhoneInfo  {
 
@@ -34,6 +32,12 @@ public class PhoneInfo  {
         manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     }
 
+    public void setLocation(Location location) {
+        resultItem.setLatitude((float) location.getLatitude());
+        resultItem.setLongitude((float) location.getLongitude());
+        resultItem.setSpeed((int)location.getSpeed());
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void getInfo() {
@@ -43,30 +47,8 @@ public class PhoneInfo  {
         CellInfo info1;
 
         Log.d(LOG_TAG, "class - " + manager.getAllCellInfo().get(0));
-        //    final CellSignalStrengthGsm gsm1 = ((CellInfoGsm) info1).getCellSignalStrength();
-        // Log.d(LOG_TAG, "lte" + gsm1.getDbm());
-
-        //  CellLocation cell = manager.getCellLocation();
 
         GsmCellLocation gsmCell = (GsmCellLocation) manager.getCellLocation();
-        int id;
-        long id_subscriber;
-        String Type_connection;
-        long datetime;
-        int cid;
-        int psd;
-        int lac;
-        int mcc;
-        int mnc;
-        int signal_level;
-        int asu_level;
-        float latitude;
-        float longitude;
-        int speed;
-        int ping;
-        int packet_loss;
-        int download;
-        int upload;
 
         resultItem.setId_subscriber(manager.getSubscriberId());
         resultItem.setTypeConnection(convertNetworkTypeToString(manager.getNetworkType()));
@@ -74,8 +56,8 @@ public class PhoneInfo  {
         resultItem.setCid(gsmCell.getCid());
         resultItem.setPsd(gsmCell.getPsc());
         resultItem.setLac(gsmCell.getLac());
-       // testResult.setMnc();
-       // testResult.setMcc();
+        resultItem.setMnc(Integer.parseInt(manager.getNetworkOperator().substring(0, 3)));
+        resultItem.setMcc(Integer.parseInt(manager.getNetworkOperator().substring(3)));
 
         try {
             for (final CellInfo info : manager.getAllCellInfo()) {
@@ -113,7 +95,6 @@ public class PhoneInfo  {
         } catch (Exception e) {
             Log.e(LOG_TAG, "Unable to obtain cell signal information", e);
         }
-
 
     }
 
@@ -172,5 +153,6 @@ public class PhoneInfo  {
                 return "Не определено";
         }
     }
+
 
 }
