@@ -71,7 +71,9 @@ public class PingAsyncTask extends AsyncTask<String, Integer, ArrayList> {
          //   Log.d("UDP", "Сообщение2  " + new String(buf, 0, buf.length));
             DatagramPacket pack = new DatagramPacket(buf, buf.length, serv_addr, port);
             currenttime = System.currentTimeMillis();
+            Log.d("UDP", "время до отправки  " + currenttime);
             sock.send(pack);
+            Log.d("UDP", "время после отправки  " + System.currentTimeMillis());
 
             // currenttime = System.currentTimeMillis();
 
@@ -87,9 +89,11 @@ public class PingAsyncTask extends AsyncTask<String, Integer, ArrayList> {
                      sock.setSoTimeout(2000);
                     try {
                         sock.receive(packet);
+                      //  Log.d("UDP", "время получения;  " + count + "; " + System.currentTimeMillis() + "; " + currenttime);
+                        Log.d("UDP", "" + count + "; " + System.currentTimeMillis() + "; " + currenttime + ";");
                         message = new String(lmessage, 0, packet.getLength());
                         arrayPing.add(ping());
-                        Log.d(LOG_TAG, "mess получили = " + message);
+                      //  Log.d(LOG_TAG, "mess получили = " + message);
                     } catch (SocketTimeoutException e) {
                         message = "";
                         Log.d(LOG_TAG, "timeout = ");
@@ -107,17 +111,18 @@ public class PingAsyncTask extends AsyncTask<String, Integer, ArrayList> {
                     count++;
                   //  publishProgress(ping(), count);
                     // DatagramPacket pack = new DatagramPacket(buf, buf.length, serv_addr, port);
-                    Log.d(LOG_TAG, "спим = ");
+                  //  Log.d(LOG_TAG, "спим = ");
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     if (!"".equals(message)) {
-                        Log.d(LOG_TAG, "оптравляем = ");
+                     //   Log.d(LOG_TAG, "оптравляем = ");
+                       // Log.d("UDP", "время до отправки  " + System.currentTimeMillis());
                         sock.send(pack);
                         currenttime = System.currentTimeMillis();
-
+                      //  Log.d("UDP", "время после отправки  " + currenttime);
                     }
                 }
 
@@ -204,7 +209,7 @@ public class PingAsyncTask extends AsyncTask<String, Integer, ArrayList> {
     private int ping() {
      //   Log.d(LOG_TAG, "set ping");
         int  ping = (int) (System.currentTimeMillis() - currenttime);
-        Log.d(LOG_TAG, "ping = " + ping);
+      //  Log.d(LOG_TAG, "ping = " + ping);
         return ping;
     }
 

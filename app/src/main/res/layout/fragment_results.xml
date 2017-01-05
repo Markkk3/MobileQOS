@@ -14,11 +14,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <Button
+                android:text="Сохранить в csv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnsave" />
+
             <TextView
                 android:id="@+id/tvresults"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="тут будут результаты измерений" />
+
+            <ExpandableListView
+                android:id="@+id/expListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
     </ScrollView>
 

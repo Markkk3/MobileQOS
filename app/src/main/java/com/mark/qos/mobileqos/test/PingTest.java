@@ -91,8 +91,9 @@ public class PingTest {
                 Log.d("UDP", "Сообщение2  " + new String(buf, 0, buf.length));
                 DatagramPacket pack = new DatagramPacket(buf, buf.length, serv_addr, port);
                 currenttime = System.currentTimeMillis();
+                Log.d("UDP", "время до отправки " + System.currentTimeMillis());
                 sock.send(pack);
-
+                Log.d("UDP", "время после отправки  " + System.currentTimeMillis());
                 // currenttime = System.currentTimeMillis();
 
              /*   if(myDatagramReceiver == null) {
@@ -104,6 +105,7 @@ public class PingTest {
                 DatagramPacket packet = new DatagramPacket(lmessage, lmessage.length);
                 while (bKeepRunning && count < 20) {
                     sock.receive(packet);
+                    Log.d("UDP", "время получения " + System.currentTimeMillis());
                     String message = new String(lmessage, 0, packet.getLength());
                     Log.d(LOG_TAG, "mess получили = " + message);
                     //  ping();
@@ -112,7 +114,7 @@ public class PingTest {
                     // DatagramPacket pack = new DatagramPacket(buf, buf.length, serv_addr, port);
                     Log.d(LOG_TAG, "спим = ");
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -254,7 +256,7 @@ public class PingTest {
     private int ping() {
         Log.d(LOG_TAG, "set ping");
         receivetime = System.currentTimeMillis();
-       // Log.d(LOG_TAG, "1");
+        Log.d(LOG_TAG, "время полученя основное" +  receivetime);
         int  ping = (int) (receivetime - currenttime);
         Log.d(LOG_TAG, "ping = " + ping);
         return ping;

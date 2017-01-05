@@ -2,17 +2,25 @@ package com.mark.qos.mobileqos.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mark.qos.mobileqos.MainActivity;
 import com.mark.qos.mobileqos.R;
 import com.mark.qos.mobileqos.data.ResultItem;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +41,8 @@ public class FragmentResults extends Fragment {
     MainActivity mainActivity;
     ArrayList<ResultItem> resultItemArrayList = new ArrayList();
     TextView tvresults;
+    Button btnsave;
+    ExpandableListView expandableListView;
 
     public FragmentResults() {
     }
@@ -64,7 +74,16 @@ public class FragmentResults extends Fragment {
         mainActivity = (MainActivity) getActivity();
        resultItemArrayList =  mainActivity.getDatabaseManager().readResults();
 
+        btnsave = (Button) v.findViewById(R.id.btnsave);
+        btnsave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                exportCVS();
+            }
+        });
+
         tvresults = (TextView) v.findViewById(R.id.tvresults);
+        expandableListView = (ExpandableListView) v.findViewById(R.id.expListView);
 
         Log.d(LOG_TAG, "resultItemArrayList.size = " + resultItemArrayList.size());
         tvresults.append("\n");
@@ -100,6 +119,115 @@ public class FragmentResults extends Fragment {
 
         }
     }
+
+    public void exportCVS() {
+
+        String FileString = "Time;IDsubscriber;Download;Upload;Ping;PacketLost;latintude;Longitude;Speed;MCC;MNC;LAC;PSD;CID;Signal Level;ASU;" + "\n";
+        for (int i = resultItemArrayList.size()-1; i>0; i--) {
+            ResultItem resultItem = resultItemArrayList.get(i);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(resultItem.getDatetime());
+            int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+            int mMinute = calendar.get(Calendar.MINUTE);
+
+            FileString += "" +DateFormat.getDateInstance(DateFormat.SHORT).format(resultItem.getDatetime()) + " "
+                    +  mHour + ":" + mMinute  + ";";
+            FileString += resultItem.getId_subscriber() + ";";
+            FileString += resultItem.getDownload() + ";";
+            FileString += resultItem.getUpload() + ";";
+            FileString += resultItem.getPing() + ";";
+            FileString += resultItem.getPacketlost() + ";";
+            FileString += resultItem.getLatitude() + ";";
+            FileString += resultItem.getLongitude() + ";";
+            FileString += resultItem.getSpeed() + ";";
+            FileString += resultItem.getMcc() + ";";
+            FileString += resultItem.getMnc() + ";";
+            FileString += resultItem.getLac() + ";";
+            FileString += resultItem.getPsd() + ";";
+            FileString += resultItem.getCid() + ";";
+            FileString += resultItem.getSignallevel() + ";";
+            FileString += resultItem.getAsulevel() + ";" + "\n";;
+
+        }
+
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + "MobileQOS");
+        // создаем каталог
+        sdPath.mkdirs();
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(sdPath, "data.csv");
+        try {
+            // открываем поток для записи
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            // пишем данные
+            bw.write(FileString);
+            // закрываем поток
+            bw.close();
+            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+            Toast.makeText(this.getActivity(),  "Файл записан на: " + sdFile.getAbsolutePath() + "", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+/*
+    public void share() {
+        //String shareBody = "Here is the share content body";
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+    private class SaveTask extends AsyncTask<Void, Void, String> {
+
+        private ProgressDialog dialog = ProgressDialog.show(MainActivity.this,
+                getString(R.string.saving_title),
+                getString(R.string.saving_to_sd), true);
+
+        protected String doInBackground(Void... none) {
+            mCanvas.getThread().freeze();
+            String pictureName = getUniquePictureName(getSaveDir());
+            saveBitmap(pictureName);
+            return pictureName;
+        }
+        */
+
+/*
+        protected void onPostExecute(String pictureName) {
+
+            Uri uri = Uri.fromFile(new File(pictureName));
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+            dialog.hide();
+            mCanvas.getThread().activate();
+
+        }
+    }
+
+    private void startShareActivity(String pictureName) {
+        Uri uri = Uri.fromFile(new File(pictureName));
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType(PICTURE_MIME);
+        i.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(i,
+                getString(R.string.share_image_title)));
+    }
+
+    private String getSaveDir() {
+        String path = Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + '/' + getString(R.string.app_name) + '/';
+
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return path;
+    }
+    */
+
+
 
 
     // TODO: Rename method, update argument and hook method into UI event
