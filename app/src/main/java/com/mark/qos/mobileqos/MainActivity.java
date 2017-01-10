@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity
         fragmentResults =  new FragmentResults();
         fragmentTest =  new FragmentTest();
 
+        FragmentTransaction ftrans =  getSupportFragmentManager().beginTransaction();
+        ftrans.replace(R.id.content_main, fragmentPhoneInfo);
+        ftrans.commit();
+
        databaseManager = new DatabaseManager(getApplication());
 
         //startService(new Intent(this, LocationService.class));
@@ -183,14 +187,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.setting) {
             Log.d(LOG_TAG, "setting");
             Intent intent = new Intent(this, SettingsActivity.class);
-           startActivity(intent);
-
-        } else if (id == R.id.nav_share) {
-            Log.d(LOG_TAG, "nav_share");
-
-        } else if (id == R.id.nav_send) {
-            Log.d(LOG_TAG, "nav_send");
+            startActivity(intent);
         }
+
         ftrans.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.mark.qos.mobileqos.MainActivity;
 import com.mark.qos.mobileqos.R;
+import com.mark.qos.mobileqos.adapter.RvAdapter;
 import com.mark.qos.mobileqos.data.ResultItem;
 
 import java.io.BufferedWriter;
@@ -41,8 +44,10 @@ public class FragmentResults extends Fragment {
     MainActivity mainActivity;
     ArrayList<ResultItem> resultItemArrayList = new ArrayList();
     TextView tvresults;
+
     Button btnsave;
     ExpandableListView expandableListView;
+    RecyclerView recyclerView;
 
     public FragmentResults() {
     }
@@ -83,15 +88,22 @@ public class FragmentResults extends Fragment {
         });
 
         tvresults = (TextView) v.findViewById(R.id.tvresults);
-        expandableListView = (ExpandableListView) v.findViewById(R.id.expListView);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recycleview);
+
 
         Log.d(LOG_TAG, "resultItemArrayList.size = " + resultItemArrayList.size());
-        tvresults.append("\n");
-        demo();
+        tvresults.setText("Всего " +  resultItemArrayList.size() + " измерений");
+       // tvresults.append("\n");
+       // demo();
+        RvAdapter adapter = new RvAdapter(resultItemArrayList);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(llm);
+        adapter.notifyDataSetChanged();
 
         return v;
     }
-
+/*
     public void demo() {
 
         for (int i = resultItemArrayList.size()-1; i>0; i--) {
@@ -119,7 +131,7 @@ public class FragmentResults extends Fragment {
 
         }
     }
-
+*/
     public void exportCVS() {
 
         String FileString = "Time;IDsubscriber;Download;Upload;Ping;PacketLost;latintude;Longitude;Speed;MCC;MNC;LAC;PSD;CID;Signal Level;ASU;" + "\n";

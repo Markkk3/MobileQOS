@@ -4,34 +4,86 @@
     android:layout_height="match_parent"
     tools:context="com.mark.qos.mobileqos.fragments.FragmentResults">
 
-    <!-- TODO: Update blank fragment layout -->
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnsave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить в csv" />
+
+        <TextView
+            android:id="@+id/tvresults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="60dp"
+            android:orientation="vertical">
 
-            <Button
-                android:text="Сохранить в csv"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnsave" />
+                android:layout_height="56dp"
+                android:layout_margin="2dp"
+                android:elevation="2dp">
 
-            <TextView
-                android:id="@+id/tvresults"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="тут будут результаты измерений" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-            <ExpandableListView
-                android:id="@+id/expListView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Время"
+                        android:textSize="@dimen/result_item_textsizeinfo" />
+
+
+                    <TextView
+                        android:id="@+id/tvping"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Задержка"
+                        android:textSize="@dimen/result_item_textsizeinfo" />
+
+                    <TextView
+                        android:id="@+id/tvdownload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Входящая \n скорость"
+                        android:textSize="@dimen/result_item_textsizeinfo" />
+
+                    <TextView
+                        android:id="@+id/tvupload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Исходящая \n скорость"
+                        android:textSize="@dimen/result_item_textsizeinfo" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
-    </ScrollView>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycleview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </FrameLayout>

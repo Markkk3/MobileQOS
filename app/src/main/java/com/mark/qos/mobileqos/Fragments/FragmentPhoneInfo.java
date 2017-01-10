@@ -31,7 +31,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -57,9 +56,21 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
 
     private OnFragmentInteractionListener mListener;
     TextView textinfo;
+
+    TextView tvsignal;
+    TextView tvasu;
+    TextView tvcid;
+    TextView tvpsc;
+    TextView tvlac;
+    TextView tvidsubscriber;
+    TextView tvoperatorname;
+    TextView tvoperatorcode;
+    TextView tvphotetype;
+    TextView tvnetworktype;
+
     TextView textinfosignal;
     final String LOG_TAG = "myLogs";
-    Button btngetino;
+   // Button btngetino;
     TelephonyManager manager;
     MapView mapView;
     private GoogleMap mMap;
@@ -111,6 +122,7 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,13 +131,27 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
         Log.d(LOG_TAG, "on CreateView FragmentInfo");
         textinfo = (TextView) v.findViewById(R.id.textinfo);
         textinfosignal = (TextView) v.findViewById(R.id.textinfosignal);
-        btngetino = (Button) v.findViewById(R.id.btngetinfo);
-        btngetino.setOnClickListener(this);
+     //   btngetino = (Button) v.findViewById(R.id.btngetinfo);
+     //   btngetino.setOnClickListener(this);
+
+         tvsignal = (TextView) v.findViewById(R.id.textView1);
+         tvasu = (TextView) v.findViewById(R.id.textView2);
+         tvcid = (TextView) v.findViewById(R.id.textView3);
+         tvpsc = (TextView) v.findViewById(R.id.textView4);
+         tvlac = (TextView) v.findViewById(R.id.textView5);
+         tvidsubscriber = (TextView) v.findViewById(R.id.textView6);
+         tvoperatorname = (TextView) v.findViewById(R.id.textView7);
+         tvoperatorcode = (TextView) v.findViewById(R.id.textView8);
+         tvphotetype = (TextView) v.findViewById(R.id.textView9);
+         tvnetworktype = (TextView) v.findViewById(R.id.textView10);
+
 
         mapView = (MapView) v.findViewById(R.id.mapView2);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         mapView.setFocusable(true);
+
+        getInfo();
         return v;
     }
 
@@ -140,10 +166,10 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btngetinfo:
+            /*case R.id.btngetinfo:
                 Log.d(LOG_TAG, "Button click");
                 getInfo();
-                break;
+                break;*/
         }
     }
 
@@ -167,10 +193,13 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
                         final CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
                         // do what you need
                         Log.d(LOG_TAG, "gsm");
-                        textinfosignal.setText(" ");
+                       /* textinfosignal.setText(" ");
                         textinfosignal.append("\n Сигнал: \t" + gsm.getDbm());
                         textinfosignal.append("\n AsuLevel \t" + gsm.getAsuLevel());
                         textinfosignal.append("\n Уровень: \t" + gsm.getLevel());
+*/
+                        tvsignal.setText(gsm.getDbm()+ " dBm");
+                        tvasu.setText("" +gsm.getAsuLevel());
                     } else if (info instanceof CellInfoCdma) {
                         final CellSignalStrengthCdma cdma = ((CellInfoCdma) info).getCellSignalStrength();
                         // do what you need
@@ -180,20 +209,26 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
                         final CellSignalStrengthWcdma wcdma = ((CellInfoWcdma) info).getCellSignalStrength();
                         // do what you need
 
-                        textinfosignal.setText(" ");
+                       /* textinfosignal.setText(" ");
                         textinfosignal.append("\n Сигнал: \t" + wcdma.getDbm());
                         textinfosignal.append("\n AsuLevel \t" + wcdma.getAsuLevel());
-                        textinfosignal.append("\n Уровень: \t" + wcdma.getLevel());
+                        textinfosignal.append("\n Уровень: \t" + wcdma.getLevel());*/
+
+                        tvsignal.setText(wcdma.getDbm()+ " dBm");
+                        tvasu.setText("" +wcdma.getAsuLevel());
 
                     } else if (info instanceof CellInfoLte) {
                         final CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
                         // do what you need
                         Log.d(LOG_TAG, "lte");
-                        textinfosignal.setText(" ");
+                      /*  textinfosignal.setText(" ");
                         textinfosignal.append("\n Сигнал: \t" + lte.getDbm());
                         textinfosignal.append("\n AsuLevel \t" + lte.getAsuLevel());
                         textinfosignal.append("\n TimingAdvance \t" + lte.getTimingAdvance());
-                        textinfosignal.append("\n Уровень: \t" + lte.getLevel());
+                        textinfosignal.append("\n Уровень: \t" + lte.getLevel());*/
+
+                        tvsignal.setText(lte.getDbm()+ " dBm");
+                        tvasu.setText("" + lte.getAsuLevel());
 
                     } else {
                         throw new Exception("Unknown type of cell signal!");
@@ -225,7 +260,17 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
 
         GsmCellLocation gsmCell = (GsmCellLocation) manager.getCellLocation();
 
-        textinfo.setText("");
+        tvcid.setText("" + gsmCell.getCid());
+        tvpsc.setText("" + gsmCell.getPsc());
+        tvlac.setText("" + gsmCell.getLac());
+
+        tvidsubscriber.setText("" + manager.getSubscriberId());
+        tvoperatorname.setText("" + manager.getNetworkOperatorName());
+        tvoperatorcode.setText("" + manager.getNetworkOperator());
+        tvphotetype.setText("" + convertPhoneTypeToString(manager.getPhoneType()));
+        tvnetworktype.setText("" + convertNetworkTypeToString(manager.getNetworkType()));
+
+        /*textinfo.setText("");
         textinfo.append("\n Cid:\t" + gsmCell.getCid());
         textinfo.append("\n Psc:\t" + gsmCell.getPsc());
         textinfo.append("\n Lac:\t" + gsmCell.getLac());
@@ -245,7 +290,7 @@ public class FragmentPhoneInfo extends Fragment implements View.OnClickListener,
         textinfo.append("\n VoiceMailAlphaTag \t" + manager.getVoiceMailAlphaTag());
         textinfo.append("\n VoiceMailNumber \t" + manager.getVoiceMailNumber());
         textinfo.append("\n hasIccCard\t" + manager.hasIccCard());
-        textinfo.append("\n Роуминиг\t" + manager.isNetworkRoaming());
+        textinfo.append("\n Роуминиг\t" + manager.isNetworkRoaming());*/
 
     /*    textinfo.append("\n ----------------\t" );
         textinfo.append("\n Сим опреатор\t" + manager.getSimOperator());
