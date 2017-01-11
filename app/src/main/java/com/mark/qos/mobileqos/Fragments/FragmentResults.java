@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.mark.qos.mobileqos.MainActivity;
 import com.mark.qos.mobileqos.R;
 import com.mark.qos.mobileqos.adapter.RvAdapter;
-import com.mark.qos.mobileqos.data.ResultItem;
+import com.mark.qos.mobileqos.object.ResultItem;
 
 import java.io.BufferedWriter;
 import java.io.File;

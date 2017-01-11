@@ -23,7 +23,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.mark.qos.mobileqos.MainActivity;
 import com.mark.qos.mobileqos.R;
-import com.mark.qos.mobileqos.data.ResultItem;
+import com.mark.qos.mobileqos.object.ResultItem;
 import com.mark.qos.mobileqos.test.DownloadTest;
 import com.mark.qos.mobileqos.test.DownloadTestInterface;
 import com.mark.qos.mobileqos.test.PhoneInfo;

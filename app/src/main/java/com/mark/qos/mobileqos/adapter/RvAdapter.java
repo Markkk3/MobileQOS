@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mark.qos.mobileqos.R;
-import com.mark.qos.mobileqos.data.ResultItem;
+import com.mark.qos.mobileqos.object.ResultItem;
 
 import java.text.DateFormat;
 import java.util.ArrayList;

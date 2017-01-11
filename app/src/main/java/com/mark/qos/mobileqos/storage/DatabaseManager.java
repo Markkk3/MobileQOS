@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.mark.qos.mobileqos.MyApplication;
-import com.mark.qos.mobileqos.data.ResultItem;
+import com.mark.qos.mobileqos.object.ResultItem;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.mark.qos.mobileqos.data;
+package com.mark.qos.mobileqos.object;
 
 /**
  * Created by tushkevich_m on 22.11.2016.
